@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-RfekGV6fZXMN1XYz5oPc4N/0IDvTM1Nt6Xciam6v0Al+glvRJ2mhnsr2S6tH/qM8"
+	crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<title>4m1</title>
+	<style>
+		.github {
+			border-bottom: 2px solid orange;
+			padding-bottom: 4px;
+		}
+		.avatar {
+			width: 100%;
+		}
+		footer {
+			border-top: 2px solid orange;
+			margin-top: 4px;
+		}
+	</style>
+	
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand text-warning" href="/">4m1</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03"
+		aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor03">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Home
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" target="_blank" href="/github">GitHub</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" target="_blank" href="/twitter">Twitter</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	
+	<div class="alert alert-dismissible alert-warning">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<h4 class="alert-heading">Warning!</h4>
+		<p class="mb-0">This webpage is under heavy development. If you find any bug just ignore it.</p>
+	</div>
+
+	<div class="jumbotron">
+		<div class="container text-center">
+			<h1 class="text-warning">4m1</h1>
+			<p>Welcome to my Portfolio</p>
+		</div>
+	</div>
+
+	<div class="container">
+		<h1 class="text-white text-center github">GitHub Information</h1>
+		<div class="profile">
+		</div>
+		<div class="repos">
+		</div>
+	</div>
+
+	<br>
+	
+	<footer class="text-center foot">
+		<br>
+		Copyright &copy; 2018 <br><p class="text-orange">4m1</p>
+	</footer>
+	
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+	<script>
+
+		$(document).ready(function() {
+			$.ajax({
+				url: 'https://api.github.com/users/dev4m1',
+				data: {
+					client_id: 'b2e7f5ab8f318b093eef',
+					client_secret: '26169870296df490d264936dd27faf50d99381c9',
+					 
+				}
+			}).done(function(user) {
+				$.ajax({
+					url: 'https://api.github.com/users/dev4m1/repos',
+					data: {
+						client_id: 'b2e7f5ab8f318b093eef',
+						client_secret: '26169870296df490d264936dd27faf50d99381c9',
+						sort: 'created: asc',
+						per_page: 5
+					}
+				}).done(function (repos) {
+					$.each(repos, function (index, repo) {
+						$('.repos').append(`
+						<br>
+            <div class="well">
+              <div class="row">
+                <div class="col-md-7">
+                  <strong>${repo.name}</strong>: ${repo.description}
+                </div>
+                <div class="col-md-3">
+                  <span class="label label-default">Forks: ${repo.forks_count}</span>
+                  <span class="label label-primary">Watchers: ${repo.watchers_count}</span>
+                  <span class="label label-success">Stars: ${repo.stargazers_count}</span>
+                </div>
+                <div class="col-md-2">
+                  <a href="${repo.html_url}" target="_blank" class="btn btn-warning">Repo Page</a>
+                </div>
+              </div>
+            </div>
+          `);
+					});
+				});
+				$('.profile').html(`
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">${user.name}</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-3">
+                <img class="thumbnail avatar" src="${user.avatar_url}">
+                <a target="_blank" class="btn btn-warning btn-block" href="${user.html_url}">View Profile</a>
+              </div>
+              <div class="col-md-9">
+              <span class="label text-orange">Public Repos: ${user.public_repos}</span>
+              <span class="label text-orange">Public Gists: ${user.public_gists}</span>
+              <span class="label text-orange">Followers: ${user.followers}</span>
+              <span class="label text-orange">Following: ${user.following}</span>
+              <br><br>
+              <ul class="list-group">
+                <li class="list-group-item">Company: ${user.company}</li>
+                <li class="list-group-item">Website/blog: <a href="${user.blog}" target="_blank">${user.blog}</a></li>
+                <li class="list-group-item">Bio: ${user.bio}</li>
+                <li class="list-group-item">Member Since: ${user.created_at}</li>
+              </ul>
+              </div>
+            </div>
+          </div>
+				</div>
+				<br>
+        <h3 class="page-header">Latest Repos</h3>
+      	`);
+				});
+			});
+
+	</script>
+
+	</body>
+</html>
